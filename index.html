@@ -95,78 +95,156 @@
     </div>
 
     <script>
-        var errorMsg = "";
-        var missingField = "";
+        $(document).ready(function() {
+            //Variables To Check Password Strength
+            let number = /[0-9]/;
+            let alphabets = /[a-zA-Z]/;
+            let specialCharacters = /[~,`,!,@,#,$,%,^,&,*,-,_,+,=,?,>,<]/;
 
-        //Variables To Check Password Strength
-        let number = /[0-9]/;
-        let alphabets = /[a-zA-Z]/;
-        let specialCharacters = /[~,`,!,@,#,$,%,^,&,*,-,_,+,=,?,>,<]/;
-
-        //Validate Email
-        function isEmail(email) {
-            var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-            return regex.test(email);
-        }
-
-        $("#submitBtn").click(function(){
-            if($("#fullname").val() == ""){
-                missingField += "<p>Name Not Filled</p>"
+            //Validate Email
+            function isEmail(email) {
+                var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                return regex.test(email);
             }
 
-            if($("#email").val() == ""){
-                missingField += "<p>Email Not Filled</p>"
-            }
+            $("#submitBtn").click(function(e) {
+                // Prevent the form from submitting
+                e.preventDefault();
 
-            if($("#phoneNo").val() == ""){
-                missingField += "<p>Phone Number Not Filled</p>"
-            }
+                // Reset error messages on each click to prevent duplicates
+                let errorMsg = "";
+                let missingField = "";
+                $("#errors").html("");
+                $("#success").html("");
 
-            if($("#password").val() == ""){
-                missingField += "<p>Password Number Not Filled</p>"
-            }
+                // Check for missing fields
+                if ($("#fullname").val() == "") {
+                    missingField += "<p>Name is required.</p>";
+                }
+                if ($("#email").val() == "") {
+                    missingField += "<p>Email is required.</p>";
+                }
+                if ($("#phoneNo").val() == "") {
+                    missingField += "<p>Phone Number is required.</p>";
+                }
+                if ($("#password").val() == "") {
+                    missingField += "<p>Password is required.</p>";
+                }
 
-            //Email Validation
-            if(isEmail($("#email").val()) == false){
-                errorMsg += "<p>Email ID not valid!</p>";
-            }
+                // --- Field Validation (only if not missing) ---
 
-            if($("#fullname").val().split("").length < 2){
-                errorMsg += "<p>Name must be more than one character!</p>"
-            }
+                // Full Name Validation
+                if ($("#fullname").val() != "" && $("#fullname").val().length < 2) {
+                    errorMsg += "<p>Name must be more than one character.</p>";
+                }
+
+                // Email Validation
+                if ($("#email").val() != "" && !isEmail($("#email").val())) {
+                    errorMsg += "<p>Your Email ID is not valid.</p>";
+                }
+
+                // Phone Number Validation
+                if ($("#phoneNo").val() != "" && !$.isNumeric($("#phoneNo").val())) {
+                    errorMsg += "<p>Phone Number must be numeric.</p>";
+                }
+                if ($("#phoneNo").val().length > 10) {
+                    errorMsg += "<p>Phone Number cannot be more than 10 characters.</p>";
+                }
+
+                // Password Validation
+                if ($("#password").val() != "" && $("#password").val().length < 8) {
+                    errorMsg += "<p>Password must be at least 8 characters long.</p>";
+                }
+                if ($("#password").val() != "" && !($('#password').val().match(number) && $('#password').val().match(alphabets) && $('#password').val().match(specialCharacters))) {
+                    errorMsg += "<span>Password must include a letter, a number, and a special character.</span>";
+                }
+                if ($("#password").val() !== $("#confirmpassword").val()) {
+                    errorMsg += "<p>Passwords do not match.</p>";
+                }
+
+
+                // --- Display Messages ---
+                let finalMessages = missingField + errorMsg;
+
+                if (finalMessages === "") {
+                    $("#success").html("You are Registered! ✅");
+                } else {
+                    $("#errors").html(finalMessages);
+                }
+            });
+        });
+        // var errorMsg = "";
+        // var missingField = "";
+
+        // //Variables To Check Password Strength
+        // let number = /[0-9]/;
+        // let alphabets = /[a-zA-Z]/;
+        // let specialCharacters = /[~,`,!,@,#,$,%,^,&,*,-,_,+,=,?,>,<]/;
+
+        // //Validate Email
+        // function isEmail(email) {
+        //     var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        //     return regex.test(email);
+        // }
+
+        // $("#submitBtn").click(function(){
+        //     if($("#fullname").val() == ""){
+        //         missingField += "<p>Name Not Filled</p>"
+        //     }
+
+        //     if($("#email").val() == ""){
+        //         missingField += "<p>Email Not Filled</p>"
+        //     }
+
+        //     if($("#phoneNo").val() == ""){
+        //         missingField += "<p>Phone Number Not Filled</p>"
+        //     }
+
+        //     if($("#password").val() == ""){
+        //         missingField += "<p>Password Number Not Filled</p>"
+        //     }
+
+        //     //Email Validation
+        //     if(isEmail($("#email").val()) == false){
+        //         errorMsg += "<p>Email ID not valid!</p>";
+        //     }
+
+        //     if($("#fullname").val().split("").length < 2){
+        //         errorMsg += "<p>Name must be more than one character!</p>"
+        //     }
             
             
-            //Phone Number Validation
-            if($.isNumeric($("#phoneNo").val() == false)){
-                errorMsg += "<p>Phone Number is not valid!</p>"
-            }
+        //     //Phone Number Validation
+        //     if($.isNumeric($("#phoneNo").val() == false)){
+        //         errorMsg += "<p>Phone Number is not valid!</p>"
+        //     }
 
-            if($("#phoneNo").val().length > 10){
-                errorMsg += "<p>Phone Number should be less than 10 Characters!</p>"
-            }
+        //     if($("#phoneNo").val().length > 10){
+        //         errorMsg += "<p>Phone Number should be less than 10 Characters!</p>"
+        //     }
 
             
-            //Password Validation
-            if($("#password").val() !== $("#confirmpassword").val()){
-                errorMsg += "<p>Password Does Not Match!</p>"
-            }
+        //     //Password Validation
+        //     if($("#password").val() !== $("#confirmpassword").val()){
+        //         errorMsg += "<p>Password Does Not Match!</p>"
+        //     }
 
-            if($('#password').val().match(number) && $('#password').val().match(alphabets) && $('#password').val().match(specialCharacters)){
-                errorMsg += "";
-            } else {
-                errorMsg += "<span>Password must include the following <ul><li>letter</li> <li>number</li> <li>special Characters.</li></ul></span>";
-            }
+        //     if($('#password').val().match(number) && $('#password').val().match(alphabets) && $('#password').val().match(specialCharacters)){
+        //         errorMsg += "";
+        //     } else {
+        //         errorMsg += "<span>Password must include the following <ul><li>letter</li> <li>number</li> <li>special Characters.</li></ul></span>";
+        //     }
 
-            if($('#password').val().length < 8){
-                errorMsg += "<span>Password must be at least 8 characters in length</span>"
-            }
+        //     if($('#password').val().length < 8){
+        //         errorMsg += "<span>Password must be at least 8 characters in length</span>"
+        //     }
 
-            if(errorMsg == ""){
-                $("#success").html("You are Registered!");
-            }else{
-                $("#errors").html(errorMsg + missingField)
-            };
-        })
+        //     if(errorMsg == ""){
+        //         $("#success").html("You are Registered!");
+        //     }else{
+        //         $("#errors").html(errorMsg + missingField)
+        //     };
+        // })
     </script>
 </body>
 </html>
