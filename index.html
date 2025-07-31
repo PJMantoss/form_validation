@@ -75,9 +75,8 @@
                 type="tel" 
                 name="phoneNo" 
                 id="phoneNo"
-                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                maxlength="10"
                 placeholder="064-807-0417" 
-                max="10"
                 required
             >
         </div>
@@ -97,6 +96,13 @@
 
     <script>
         $(document).ready(function() {
+
+            // NEW: Real-time filtering for the phone number input
+            $('#phoneNo').on('input', function() {
+                // Replace any character that is not a digit with an empty string
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
             //Variables To Check Password Strength
             let number = /[0-9]/;
             let alphabets = /[a-zA-Z]/;
@@ -109,16 +115,13 @@
             }
 
             $("#submitBtn").click(function(e) {
-                // Prevent the form from submitting
                 e.preventDefault();
 
-                // Reset error messages on each click to prevent duplicates
                 let errorMsg = "";
                 let missingField = "";
                 $("#errors").html("");
                 $("#success").html("");
 
-                // Check for missing fields
                 if ($("#fullname").val() == "") {
                     missingField += "<p>Name is required.</p>";
                 }
@@ -132,27 +135,22 @@
                     missingField += "<p>Password is required.</p>";
                 }
 
-                // --- Field Validation (only if not missing) ---
-
-                // Full Name Validation
                 if ($("#fullname").val() != "" && $("#fullname").val().length < 2) {
                     errorMsg += "<p>Name must be more than one character.</p>";
                 }
 
-                // Email Validation
                 if ($("#email").val() != "" && !isEmail($("#email").val())) {
                     errorMsg += "<p>Your Email ID is not valid.</p>";
                 }
 
-                // Phone Number Validation
+                // The existing validation for submit still works as a fallback
                 if ($("#phoneNo").val() != "" && !$.isNumeric($("#phoneNo").val())) {
                     errorMsg += "<p>Phone Number must be numeric.</p>";
                 }
-                if ($("#phoneNo").val().length > 10) {
-                    errorMsg += "<p>Phone Number cannot be more than 10 characters.</p>";
+                if ($("#phoneNo").val() != "" && $("#phoneNo").val().length != 10) {
+                    errorMsg += "<p>Phone Number must be 10 digits.</p>";
                 }
 
-                // Password Validation
                 if ($("#password").val() != "" && $("#password").val().length < 8) {
                     errorMsg += "<p>Password must be at least 8 characters long.</p>";
                 }
@@ -163,8 +161,6 @@
                     errorMsg += "<p>Passwords do not match.</p>";
                 }
 
-
-                // --- Display Messages ---
                 let finalMessages = missingField + errorMsg;
 
                 if (finalMessages === "") {
