@@ -130,6 +130,22 @@
                 this.value = this.value.replace(/[^0-9]/g, '');
             });
 
+            // NEW: Event listener for the 'Show Password' checkbox
+            $('#showPasswordToggle').on('change', function() {
+                // Get the password input field
+                const passwordField = $('#password');
+                // Check if the checkbox is checked and toggle the type attribute
+                const newType = $(this).is(':checked') ? 'text' : 'password';
+                passwordField.attr('type', newType);
+            });
+
+            // NEW: Event listener for the 'Show Confirm Password' checkbox
+             $('#showConfirmPasswordToggle').on('change', function() {
+                const passwordField = $('#confirmpassword');
+                const newType = $(this).is(':checked') ? 'text' : 'password';
+                passwordField.attr('type', newType);
+            });
+
             //Variables To Check Password Strength
             let number = /[0-9]/;
             let alphabets = /[a-zA-Z]/;
